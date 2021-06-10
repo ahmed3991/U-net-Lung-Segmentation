@@ -14,6 +14,7 @@ from tqdm import tqdm
 from model.unet import UNet
 import time
 import copy
+from DiceLoss import DiceLoss
 
 def train_and_validate(net,criterion, optimizer, scheduler, dataloader,device,epochs, load_model = None):
 
@@ -32,7 +33,7 @@ def train_and_validate(net,criterion, optimizer, scheduler, dataloader,device,ep
     history = {'train':{'epoch':[], 'loss' : [] , 'acc':[]},
                'val'  :{'epoch':[], 'loss' : [] , 'acc':[]}}
 
-    best_acc = 0.98
+    best_acc = 0.93
     best_loss = 10000000000
     start = time.time()
     for epoch in range(epochs):
@@ -207,14 +208,15 @@ def main():
     from torch.optim.lr_scheduler import StepLR, ReduceLROnPlateau
     # scheduler = StepLR(optimizer, step_size = 3 , gamma = 0.8)
     ## option 2.
-    scheduler = ReduceLROnPlateau(optimizer, 'min', patience=3)
+    scheduler = ReduceLROnPlateau(optimizer, 'min', patience=5,verbse=True)
 
     # # set criterion
     # if model.n_classes > 1:
     #     criterion = nn.CrossEntropyLoss()
     # else:
     #     criterion = nn.BCEWithLogitsLoss()
-    criterion = nn.BCEWithLogitsLoss()
+    criterion = DiceLoss()
+    #criterion = nn.BCEWithLogitsLoss()
 
     train_and_validate(net=model,criterion=criterion,optimizer=optimizer,dataloader=dataloader,device=device,epochs=args.epochs, scheduler=scheduler,load_model=checkpoint_path)
     # test()
