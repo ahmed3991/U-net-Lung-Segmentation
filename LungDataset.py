@@ -50,7 +50,7 @@ class LungDataset(Dataset): # inherit from torch.utils.data.Dataset
         #        mask_fName = fName
         #mask_path = os.path.join(self.mask_path, 'mask_'+img_name)
 
-        #img_size = np.array(img).shape
+        img_size = np.array(img).shape
 
         #if os.path.exists(mask_path):
         #    mask = Image.open(mask_path).convert('L')  # PIL Image

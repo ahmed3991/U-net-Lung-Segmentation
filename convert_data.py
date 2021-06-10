@@ -74,7 +74,7 @@ def get_args():
     parser.add_argument('--path',type=str,default='./data/Qata_COV')
     parser.add_argument('--gpu', type=str, default = '0')
     # arguments for training
-    parser.add_argument('--img_size', type = int , default = 224)
+    parser.add_argument('--img_size', type = int , default = 1024)
 
     parser.add_argument('--load_model', type=str, default='best_checkpoint.pt', help='.pth file path to load model')
 
