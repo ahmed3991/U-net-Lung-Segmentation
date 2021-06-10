@@ -123,7 +123,7 @@ def main():
         ToTensor()
     ])
 
-    img_path = os.path.join(args.path,'Images')
+    img_path = os.path.join(args.path,'train')
     img_list = os.listdir(img_path)
 
     dataset = LungSegDataset(root_dir = args.path,split=img_list,transforms=eval_transforms)
