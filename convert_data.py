@@ -19,7 +19,7 @@ import gc
 def create_predict_data(path,img_list,out,net,dataloader,device,img_size):
 
 
-    croped_out = os.path.join(out,'predict_lung')
+    croped_out = os.path.join(out,'croped_lung')
 
     """Iterate over data"""
 
