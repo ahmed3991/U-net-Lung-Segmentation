@@ -120,7 +120,7 @@ def main():
     # set model
     lung_model = UNet(n_channels=1, n_classes=1).to(device)
 
-    checkpoint = torch.load(args.load_model)
+    checkpoint = torch.load(args.load_lung_model)
     lung_model.load_state_dict(checkpoint['model_state_dict'])
 
 
@@ -155,6 +155,12 @@ def main():
     cuda.select_device(0)
     cuda.close()
     cuda.select_device(0)
+
+    # set model
+    lung_model = UNet(n_channels=1, n_classes=1).to(device)
+
+    checkpoint = torch.load(args.load_qata_model)
+    lung_model.load_state_dict(checkpoint['model_state_dict'])
 
     dataset = LungDataset(root_dir = args.path,split=img_list,transforms=eval_transforms,img_size=args.img_size_qata)
     dataloader = DataLoader(dataset = dataset , batch_size=16,shuffle=False)
