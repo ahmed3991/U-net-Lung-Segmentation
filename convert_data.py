@@ -129,7 +129,7 @@ def main():
         - Where N is the number of the Max Pooling layers (in the Vanila UNet N = 5)
     """
 
-    img_size = args.img_size #default: 224
+    img_size = args.img_size_lung #default: 224
 
 
     # set transforms for dataset
