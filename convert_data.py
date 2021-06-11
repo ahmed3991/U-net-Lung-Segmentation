@@ -16,10 +16,8 @@ from model.unet import UNet
 
 import gc
 
-def create_predict_data(path,img_list,out,net,dataloader,device,img_size):
 
-
-    croped_out = os.path.join(out,'croped_lung')
+def generate_masks(net,dataloader,device,useful_size,current_size):
 
     """Iterate over data"""
 
@@ -41,15 +39,33 @@ def create_predict_data(path,img_list,out,net,dataloader,device,img_size):
         
         masks = pred.detach().cpu().numpy().astype(np.uint8)
 
-        predicted_masks.append(masks)
+        if useful_size != current_size:
 
-    predicted_masks_array = np.concatenate(predicted_masks, axis=0)
+            resized_masks = np.zeros((masks.shape[0],useful_size,useful_size),dtype=np.uint8)
+
+            for i,mask in enumerate(masks):
+
+                mask = (mask*255).astype(np.uint8)
+
+                mask_img = Image.fromarray(mask).resize((useful_size,useful_size),Image.LANCZOS)
+
+                resized_masks[i,:,:] = (np.array(mask_img)/255).astype(np.uint8)
+
+            predicted_masks.append(resized_masks)
+        else:
+            predicted_masks.append(masks)
+
+
+    return np.concatenate(predicted_masks, axis=0)
+
+
+
+def create_predict_data(path,img_list,out,predicted_masks_array):
+
+
+    croped_out = os.path.join(out,'croped_lung')
 
     
-    del predicted_masks
-    gc.collect()
-    
-
     for i,img_name in tqdm(enumerate(img_list)):
 
         img = Image.open(os.path.join(path,'train/'+img_name)).convert('L')
@@ -74,9 +90,11 @@ def get_args():
     parser.add_argument('--path',type=str,default='./data/Qata_COV')
     parser.add_argument('--gpu', type=str, default = '0')
     # arguments for training
-    parser.add_argument('--img_size', type = int , default = 1024)
+    parser.add_argument('--img_size_lung', type = int , default = 512)
+    parser.add_argument('--img_size_qata', type = int , default = 224)
 
-    parser.add_argument('--load_model', type=str, default='best_checkpoint.pt', help='.pth file path to load model')
+    parser.add_argument('--load_lung_model', type=str, default='best_checkpoint.pt', help='.pth file path to load model')
+    parser.add_argument('--load_qata_model', type=str, default='best_checkpoint.pt', help='.pth file path to load model')
 
     parser.add_argument('--out', type=str, default='./dataset')
     return parser.parse_args()
@@ -100,10 +118,10 @@ def main():
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
     # set model
-    model = UNet(n_channels=1, n_classes=1).to(device)
+    lung_model = UNet(n_channels=1, n_classes=1).to(device)
 
     checkpoint = torch.load(args.load_model)
-    model.load_state_dict(checkpoint['model_state_dict'])
+    lung_model.load_state_dict(checkpoint['model_state_dict'])
 
 
     """set img size
@@ -126,12 +144,29 @@ def main():
     img_path = os.path.join(args.path,'train')
     img_list = os.listdir(img_path)
 
-    dataset = LungDataset(root_dir = args.path,split=img_list,transforms=eval_transforms)
-    dataloader = DataLoader(dataset = dataset , batch_size=16)
+    dataset = LungDataset(root_dir = args.path,split=img_list,transforms=eval_transforms,img_size=args.img_size_lung)
+    dataloader = DataLoader(dataset = dataset , batch_size=16,shuffle=False)
     
     #create_original_data(args.path,args.out)
+    
+    masks_lung = generate_masks(lung_model,dataloader,device,args.img_size_lung,args.img_size_lung)
 
-    create_predict_data(args.path,img_list,args.out,model,dataloader,device,args.img_size)
+    from numba import cuda
+    cuda.select_device(0)
+    cuda.close()
+    cuda.select_device(0)
+
+    dataset = LungDataset(root_dir = args.path,split=img_list,transforms=eval_transforms,img_size=args.img_size_qata)
+    dataloader = DataLoader(dataset = dataset , batch_size=16,shuffle=False)
+
+    masks_qata = generate_masks(qata_model,dataloader,device,args.img_size_lung,args.img_size_qata)
+
+    print(masks_lung.shape)
+    print(masks_qata.shape)
+
+    masks = np.where((masks_lung+masks_qata)==0,0,1)
+
+    create_predict_data(args.path,img_list,args.out,masks)
 
     #df = create_annotation(args.path)
 
