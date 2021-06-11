@@ -151,10 +151,10 @@ def main():
     
     masks_lung = generate_masks(lung_model,dataloader,device,args.img_size_lung,args.img_size_lung)
 
-    from numba import cuda
-    cuda.select_device(0)
-    cuda.close()
-    cuda.select_device(0)
+    #from numba import cuda
+    #cuda.select_device(0)
+    #cuda.close()
+    #cuda.select_device(0)
 
     # set model
     qata = UNet(n_channels=1, n_classes=1).to(device)
