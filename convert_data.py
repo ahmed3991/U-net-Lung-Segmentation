@@ -162,10 +162,10 @@ def main():
     checkpoint = torch.load(args.load_qata_model)
     qata_model.load_state_dict(checkpoint['model_state_dict'])
 
-    dataset = LungDataset(root_dir = args.path,split=img_list,transforms=eval_transforms,img_size=args.img_size_lung)
+    dataset = LungDataset(root_dir = args.path,split=img_list,transforms=eval_transforms,img_size=args.img_size_qata)
     dataloader = DataLoader(dataset = dataset , batch_size=16,shuffle=False)
 
-    masks_qata = generate_masks(qata_model,dataloader,device,args.img_size_lung,args.img_size_lung)
+    masks_qata = generate_masks(qata_model,dataloader,device,args.img_size_lung,args.img_size_qata)
 
     print(masks_lung.shape)
     print(masks_qata.shape)
