@@ -157,7 +157,7 @@ def main():
     #cuda.select_device(0)
 
     # set model
-    qata = UNet(n_channels=1, n_classes=1).to(device)
+    qata_model = UNet(n_channels=1, n_classes=1).to(device)
 
     checkpoint = torch.load(args.load_qata_model)
     qata_model.load_state_dict(checkpoint['model_state_dict'])
