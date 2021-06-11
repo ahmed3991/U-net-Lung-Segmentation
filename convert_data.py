@@ -170,6 +170,11 @@ def main():
     print(masks_lung.shape)
     print(masks_qata.shape)
 
+    joined_masks = masks_lung+masks_qata
+
+    del masks_lung,masks_qata
+    gc.collect()
+
     masks = np.where((masks_lung+masks_qata)==0,0,1)
 
     create_predict_data(args.path,img_list,args.out,masks)
