@@ -176,7 +176,7 @@ def main():
 
     batch_size = 500
 
-    num_batchs = math.ciel(len(img_list)/bach_size)
+    num_batchs = math.ceil(len(img_list)/bach_size)
 
     for i in range(num_batchs):
 
