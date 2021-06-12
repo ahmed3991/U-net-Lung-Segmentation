@@ -81,6 +81,8 @@ def create_predict_data(path,img_list,out,predicted_masks_array):
 
         Image.fromarray(croped).save(os.path.join(croped_out,img_name)) 
 
+        print(i)
+
         del img,mask,mask_img,croped
         gc.collect()
 
