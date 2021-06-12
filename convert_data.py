@@ -172,21 +172,13 @@ def main():
 
     print(masks_lung.shape)
     print(masks_qata.shape)
-    
-    print(masks_qata.size)
-
-    joined_masks = masks_lung+masks_qata
-
-    del masks_lung,masks_qata
-    gc.collect()
 
     batch_size = 500
 
     num_batchs = math.ciel(len(img_list)/bach_size)
 
     for i in range(num_batchs):
-        
-        print(f'batch n {i+1}')
+
         a = bath_size * i
 
         b = min(batch_size * i+1,len(img_list))
