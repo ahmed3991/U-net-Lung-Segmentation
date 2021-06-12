@@ -146,7 +146,7 @@ def main():
     ])
 
     img_path = os.path.join(args.path,'train')
-    img_list = os.listdir(img_path)[:100]
+    img_list = os.listdir(img_path)[:1000]
 
     dataset = LungDataset(root_dir = args.path,split=img_list,transforms=eval_transforms,img_size=args.img_size_lung)
     dataloader = DataLoader(dataset = dataset , batch_size=16,shuffle=False)
