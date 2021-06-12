@@ -172,17 +172,33 @@ def main():
 
     print(masks_lung.shape)
     print(masks_qata.shape)
+    
+    print(masks_qata.size)
 
     joined_masks = masks_lung+masks_qata
 
     del masks_lung,masks_qata
     gc.collect()
 
-    masks = np.where(joined_masks==0,0,1)
+    batch_size = 500
 
-    print('mask_created')
+    num_batchs = math.ciel(len(img_list)/bach_size)
 
-    create_predict_data(args.path,img_list,args.out,masks)
+    for i in range(num_batchs):
+        
+        print(f'batch n {i+1}')
+        a = bath_size * i
+
+        b = min(batch_size * i+1,len(img_list))
+
+        joined_masks = masks_lung[a:b,:,:]+masks_qata[a:b,:,:]
+
+        masks = np.where(joined_masks==0,0,1)
+
+        create_predict_data(args.path,img_list[a:b],args.out,masks)
+
+        del joined_masks, masks
+        gc.collect()
 
     #df = create_annotation(args.path)
 
