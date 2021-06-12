@@ -15,6 +15,7 @@ from LungDataset import LungDataset
 from model.unet import UNet
 
 import gc
+import math
 
 
 def generate_masks(net,dataloader,device,useful_size,current_size):
