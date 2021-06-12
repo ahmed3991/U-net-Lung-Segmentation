@@ -146,7 +146,7 @@ def main():
     ])
 
     img_path = os.path.join(args.path,'train')
-    img_list = os.listdir(img_path)
+    img_list = os.listdir(img_path)[:100]
 
     dataset = LungDataset(root_dir = args.path,split=img_list,transforms=eval_transforms,img_size=args.img_size_lung)
     dataloader = DataLoader(dataset = dataset , batch_size=16,shuffle=False)
@@ -176,11 +176,11 @@ def main():
 
     batch_size = 500
 
-    num_batchs = math.ceil(len(img_list)/bach_size)
+    num_batchs = math.ceil(len(img_list)/batch_size)
 
     for i in range(num_batchs):
 
-        a = bath_size * i
+        a = batch_size * i
 
         b = min(batch_size * i+1,len(img_list))
 
