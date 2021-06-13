@@ -66,7 +66,7 @@ def create_predict_data(path,img_list,out,predicted_masks_array):
 
     croped_out = os.path.join(out,'croped_lung')
     
-    print(img_list)
+    #print(img_list)
     
     for i,img_name in tqdm(enumerate(img_list)):
 
@@ -82,7 +82,7 @@ def create_predict_data(path,img_list,out,predicted_masks_array):
 
         Image.fromarray(croped).save(os.path.join(croped_out,img_name)) 
 
-        print(i)
+        #print(i)
 
         del img,mask,mask_img,croped
         gc.collect()
@@ -149,7 +149,7 @@ def main():
     ])
 
     img_path = os.path.join(args.path,'train')
-    img_list = os.listdir(img_path)[:1000]
+    img_list = os.listdir(img_path)#[:1000]
 
     dataset = LungDataset(root_dir = args.path,split=img_list,transforms=eval_transforms,img_size=args.img_size_lung)
     dataloader = DataLoader(dataset = dataset , batch_size=16,shuffle=False)
@@ -174,8 +174,8 @@ def main():
 
     masks_qata = generate_masks(qata_model,dataloader,device,args.img_size_lung,args.img_size_qata)
 
-    print(masks_lung.shape)
-    print(masks_qata.shape)
+    #print(masks_lung.shape)
+    #print(masks_qata.shape)
 
     batch_size = 500
 
@@ -191,7 +191,7 @@ def main():
 
         masks = np.where(joined_masks==0,0,1)
 
-        print(masks.shape)
+        #print(masks.shape)
 
         create_predict_data(args.path,img_list[a:b],args.out,masks)
 
