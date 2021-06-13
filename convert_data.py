@@ -66,7 +66,7 @@ def create_predict_data(path,img_list,out,predicted_masks_array):
 
     croped_out = os.path.join(out,'croped_lung')
     
-    print(len(img_list))
+    print(img_list)
     
     for i,img_name in tqdm(enumerate(img_list)):
 
