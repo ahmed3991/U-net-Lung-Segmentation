@@ -65,7 +65,8 @@ def create_predict_data(path,img_list,out,predicted_masks_array):
 
 
     croped_out = os.path.join(out,'croped_lung')
-
+    
+    print(len(img_list))
     
     for i,img_name in tqdm(enumerate(img_list)):
 
@@ -189,6 +190,8 @@ def main():
         joined_masks = masks_lung[a:b,:,:]+masks_qata[a:b,:,:]
 
         masks = np.where(joined_masks==0,0,1)
+
+        print(masks.shape)
 
         create_predict_data(args.path,img_list[a:b],args.out,masks)
 
