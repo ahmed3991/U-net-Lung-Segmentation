@@ -185,7 +185,7 @@ def main():
 
         a = batch_size * i
 
-        b = min(batch_size * i+1,len(img_list))
+        b = min(batch_size * (i+1),len(img_list))
 
         joined_masks = masks_lung[a:b,:,:]+masks_qata[a:b,:,:]
 
